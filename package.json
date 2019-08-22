@@ -1,0 +1,15 @@
+{
+  "name": "codenamegenerator",
+  "version": "1.0.0",
+  "description": "Making a code name",
+  "main": "index.js",
+  "dependencies": {
+    "jest": "^24.9.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Kahiro Matsudaira",
+  "license": "MIT"
+}
