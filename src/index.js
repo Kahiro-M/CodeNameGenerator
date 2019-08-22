@@ -1,4 +1,4 @@
-function  makeCodeName(inItemID){
+function  makeCodeName(inItemID,inLengthID){
   // htmlの要素IDを取得
   const makeCode = new classMakeCodeName(inItemID);
   // 花言葉リストを定義ファイルから取得
@@ -7,10 +7,12 @@ function  makeCodeName(inItemID){
   const choicedFlower = choiceFlowerList.randomChoice();
   // 選択された花と花言葉からストリングを生成
   const codeNameInfo = new classMakeStrings(choicedFlower);
-  const outputText = codeNameInfo.makeCodeNameWithText(3);
+  const codeNameLength = document.getElementById(inLengthID);
+  const outputText = codeNameInfo.makeCodeNameWithText(codeNameLength.value);
 
   if(makeCode.viewUpdate(outputText) == inItemID){
     console.log("指定のID('"+inItemID+"')の要素を更新してやったぜ!!!!");
+    console.log(outputText);
   }
   else{
     console.log("指定のID('"+inItemID+"')の要素を更新に失敗したぜ...");
