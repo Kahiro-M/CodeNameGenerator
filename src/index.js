@@ -1,62 +1,72 @@
 function  showCodeName(inLengthID){
   // htmlで表示する箇所の要素ID、指定文字数を取得
-  const ItemID = document.getElementById("NameList");
-  const CodeNameLength = document.getElementById(inLengthID).value;
+  const itemID = document.getElementById("NameList");
+  const codeNameLength = document.getElementById(inLengthID).value;
   
   // コードネーム生成クラスでリストと合あわせて作成
-  const InSelectedList = document.getElementById("ListType").value;
-  var SelectedList = FLOWER_LIST;
-  switch(InSelectedList){
+  const inSelectedList = document.getElementById("ListType").value;
+  var selectedList = FLOWER_LIST;
+  switch(inSelectedList){
     case 'Flower':
-      SelectedList = FLOWER_LIST;
+      selectedList = FLOWER_LIST;
       break;
     case 'Star':
-      SelectedList = CONSTELLATION_LIST;
+      selectedList = CONSTELLATION_LIST;
       break;
     default:
-      SelectedList = FLOWER_LIST;
+      selectedList = FLOWER_LIST;
       break;
     }
-  const Generator = new classGenerateCodeName(SelectedList,CodeNameLength);
-  const CodeNameWithList = Generator.makeCodeName();
+  const generator = new classGenerateCodeName(selectedList,codeNameLength);
+  const codeNameWithList = generator.makeCodeName();
   
   // 表示クラスでテキストを表示
-  const Display = new classDisplayText(ItemID);
-  const OutputText = Display.makeTextFromChoicedListItem(CodeNameWithList);
-  Display.viewUpdate(OutputText);
+  const display = new classDisplayText(itemID);
+  const outputText = display.makeTextFromChoicedListItem(codeNameWithList);
+  display.viewUpdate(outputText);
 }
 
 class classGenerateCodeName{
   constructor(list,length){
-    this.ChoicedList = list;
-    this.CodeNameLength = length;
-    this.NGList = NG_LIST;
+    this.choicedList = list;
+    this.codeNameLength = length;
+    this.ngList = NG_LIST;
   }
 
   makeCodeName(){
     var endFlag = false;
     while(!endFlag){
-      var ChoicedListItem = this.randomChoice();
-      ChoicedListItem.CodeName = ChoicedListItem.EnName.toUpperCase().substr(0,this.CodeNameLength);
-      if(this.isNotMatchNG(ChoicedListItem.CodeName)){
+      var choicedListItem = this.randomChoice();
+      switch(this.codeNameLength){
+        case '3':
+          choicedListItem.codeName = choicedListItem.threeCodeName.toUpperCase();
+          break;
+        case '4':
+          choicedListItem.codeName = choicedListItem.fourCodeName.toUpperCase();
+          break;
+        default:
+          choicedListItem.codeName = choicedListItem.enName.toUpperCase().substr(0,this.codeNameLength);
+          break;
+      }
+      if(this.isNotMatchNG(choicedListItem.codeName)){
         endFlag = true;
-        return ChoicedListItem;
+        return choicedListItem;
       }
       else{
-        console.log(ChoicedListItem.CodeName+" is NG.");
+        console.log(choicedListItem.codeName+" is NG.");
       }
     }
-        return ChoicedListItem;
+        return choicedListItem;
   }
 
   randomChoice(){
-    const RandomNumber = Math.floor( Math.random() * this.ChoicedList.length );
-    return this.ChoicedList[RandomNumber];
+    const randomNumber = Math.floor( Math.random() * this.choicedList.length );
+    return this.choicedList[randomNumber];
   }
   
   isNotMatchNG(inCodeName){
-    for(var i=0,checkLength=this.NGList.length;i<checkLength;i++){
-      if(inCodeName == this.NGList[i]){
+    for(var i=0,checkLength=this.ngList.length;i<checkLength;i++){
+      if(inCodeName == this.ngList[i]){
         return false;
       }
     }
@@ -68,12 +78,12 @@ class classGenerateCodeName{
 
 class classDisplayText{
   constructor(inItemID){
-    this.ItemID = inItemID;
+    this.itemID = inItemID;
   }
 
   makeTextFromChoicedListItem(inChoicedListItem){
-    const CodeNameWithText = inChoicedListItem.CodeName+"<br>"+inChoicedListItem.JpName+"("+inChoicedListItem.EnName+"):"+inChoicedListItem.Description;
-    return CodeNameWithText;
+    const codeNameWithText = inChoicedListItem.codeName+"<br>"+inChoicedListItem.jpName+"("+inChoicedListItem.enName+"):"+inChoicedListItem.description;
+    return codeNameWithText;
   }
 
   displayText(inString){
@@ -81,13 +91,13 @@ class classDisplayText{
   }
 
   viewAdd(inString){
-    this.ItemID.innerHTML += inString;
-    return this.ItemID.id;
+    this.itemID.innerHTML += inString;
+    return this.itemID.id;
   }
 
   viewUpdate(inString){
-    this.ItemID.innerHTML = "";
-    this.ItemID.innerHTML += inString;
-    return this.ItemID.id;
+    this.itemID.innerHTML = "";
+    this.itemID.innerHTML += inString;
+    return this.itemID.id;
   }
 }
