@@ -1,62 +1,80 @@
-function  makeCodeName(inItemID,inLengthID){
-  // htmlの要素IDを取得
-  const makeCode = new classMakeCodeName(inItemID);
-  // 花言葉リストを定義ファイルから取得
-  const choiceFlowerList = new classChoiceList(FLOWER_LIST);
-  // 花言葉リストから要素をランダムに選択
-  const choicedFlower = choiceFlowerList.randomChoice();
-  // 選択された花と花言葉からストリングを生成
-  const codeNameInfo = new classMakeStrings(choicedFlower);
-  const codeNameLength = document.getElementById(inLengthID);
-  const outputText = codeNameInfo.makeCodeNameWithText(codeNameLength.value);
-
-  if(makeCode.viewUpdate(outputText) == inItemID){
-    console.log("指定のID('"+inItemID+"')の要素を更新してやったぜ!!!!");
-    console.log(outputText);
-  }
-  else{
-    console.log("指定のID('"+inItemID+"')の要素を更新に失敗したぜ...");
-  }
+function  showCodeName(inItemID,inLengthID){
+  // htmlで表示する箇所の要素ID、指定文字数を取得
+  const ItemID = document.getElementById(inItemID);
+  const CodeNameLength = document.getElementById(inLengthID).value;
+  
+  // コードネーム生成クラスでリストと合あわせて作成
+  const Generator = new classGenerateCodeName(FLOWER_LIST,CodeNameLength);
+  const CodeNameWithList = Generator.makeCodeName();
+  
+  // 表示クラスでテキストを表示
+  const Display = new classDisplayText(ItemID);
+  const OutputText = Display.makeTextFromChoicedListItem(CodeNameWithList);
+  Display.viewUpdate(OutputText);
 }
 
-class classMakeStrings{
-  constructor(inChoicedListItem){
-    this.itemText = inChoicedListItem;
+class classGenerateCodeName{
+  constructor(list,length){
+    this.ChoicedList = list;
+    this.CodeNameLength = length;
+    this.NGList = NG_LIST;
   }
 
-  makeCodeNameWithText(inNumber){
-    const textCodeName = this.itemText.enName.toUpperCase().substr(0,inNumber);
-    const CodeNameWithText = textCodeName+"<br>"+this.itemText.jpName+"("+this.itemText.enName+"):"+this.itemText.flowerLanguage;
-    return CodeNameWithText;
-  }
-}
-
-class classChoiceList{
-  constructor(list){
-    this.choiceList = FLOWER_LIST;
+  makeCodeName(){
+    var endFlag = false;
+    while(!endFlag){
+      var ChoicedListItem = this.randomChoice();
+      ChoicedListItem.CodeName = ChoicedListItem.EnName.toUpperCase().substr(0,this.CodeNameLength);
+      if(this.isNotMatchNG(ChoicedListItem.CodeName)){
+        endFlag = true;
+        return ChoicedListItem;
+      }
+      else{
+        console.log(ChoicedListItem.CodeName+" is NG.");
+      }
+    }
+        return ChoicedListItem;
   }
 
   randomChoice(){
-    const randomNumber = Math.floor( Math.random() * this.choiceList.length );
-    return this.choiceList[randomNumber];
+    const RandomNumber = Math.floor( Math.random() * this.ChoicedList.length );
+    return this.ChoicedList[RandomNumber];
   }
+  
+  isNotMatchNG(inCodeName){
+    for(var i=0,checkLength=this.NGList.length;i<checkLength;i++){
+      if(inCodeName == this.NGList[i]){
+        return false;
+      }
+    }
+    return true;
+  }
+
 }
 
-class classMakeCodeName{
+
+class classDisplayText{
   constructor(inItemID){
-    this.itemID = document.getElementById(inItemID);
-    // 画面表示をリフレッシュ
-    this.itemID.innerHTML = "";
+    this.ItemID = inItemID;
+  }
+
+  makeTextFromChoicedListItem(inChoicedListItem){
+    const CodeNameWithText = inChoicedListItem.CodeName+"<br>"+inChoicedListItem.JpName+"("+inChoicedListItem.EnName+"):"+inChoicedListItem.Description;
+    return CodeNameWithText;
+  }
+
+  displayText(inString){
+    this.viewUpdate(inString);
   }
 
   viewAdd(inString){
-    this.itemID.innerHTML += inString;
-    return this.itemID.id;
+    this.ItemID.innerHTML += inString;
+    return this.ItemID.id;
   }
 
   viewUpdate(inString){
-    this.itemID.innerHTML = "";
-    this.itemID.innerHTML += inString;
-    return this.itemID.id;
+    this.ItemID.innerHTML = "";
+    this.ItemID.innerHTML += inString;
+    return this.ItemID.id;
   }
 }
