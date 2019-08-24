@@ -1,10 +1,23 @@
-function  showCodeName(inItemID,inLengthID){
+function  showCodeName(inLengthID){
   // htmlで表示する箇所の要素ID、指定文字数を取得
-  const ItemID = document.getElementById(inItemID);
+  const ItemID = document.getElementById("NameList");
   const CodeNameLength = document.getElementById(inLengthID).value;
   
   // コードネーム生成クラスでリストと合あわせて作成
-  const Generator = new classGenerateCodeName(FLOWER_LIST,CodeNameLength);
+  const InSelectedList = document.getElementById("ListType").value;
+  var SelectedList = FLOWER_LIST;
+  switch(InSelectedList){
+    case 'Flower':
+      SelectedList = FLOWER_LIST;
+      break;
+    case 'Star':
+      SelectedList = CONSTELLATION_LIST;
+      break;
+    default:
+      SelectedList = FLOWER_LIST;
+      break;
+    }
+  const Generator = new classGenerateCodeName(SelectedList,CodeNameLength);
   const CodeNameWithList = Generator.makeCodeName();
   
   // 表示クラスでテキストを表示
